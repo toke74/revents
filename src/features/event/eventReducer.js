@@ -66,7 +66,7 @@ export const deleteEvent = (state, payload) => {
 };
 
 export default createReducer(initialState, {
-  CREATE_EVENT: createEvent,
-  UPDATE_EVENT: updateEvent,
-  DELETE_EVENT: deleteEvent
+  [CREATE_EVENT]: createEvent,
+  [UPDATE_EVENT]: updateEvent,
+  [DELETE_EVENT]: deleteEvent
 });
