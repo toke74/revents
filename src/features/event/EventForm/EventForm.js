@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
 import { Segment, Form, Button, Grid, Header } from "semantic-ui-react";
+import { composeValidators, combineValidators, isRequired, hasLengthGreaterThan } from 'revalidate'
 import { createEvent, updateEvent } from "../eventActions";
 import cuid from "cuid";
 import TextInput from "../../../app/common/form/TextInput";
 import TextArea from "../../../app/common/form/TextArea";
 import SelectInput from "../../../app/common/form/SelectInput";
+import DateInput from '../../../app/common/form/DateInput';
 
 const category = [
   { key: "drinks", text: "Drinks", value: "drinks" },
@@ -16,6 +18,18 @@ const category = [
   { key: "music", text: "Music", value: "music" },
   { key: "travel", text: "Travel", value: "travel" }
 ];
+
+const validate = combineValidators({
+  title: isRequired({message: 'The event title is required'}),
+  category: isRequired({message: 'Please provide a category'}),
+  description: composeValidators(
+    isRequired({message: 'Please enter a description'}),
+    hasLengthGreaterThan(4)({message: 'Description needs to be at least 5 characters'})
+  )(),
+  city: isRequired('city'),
+  venue: isRequired('venue'),
+  date: isRequired('date')
+})
 
 export class EventForm extends Component {
   //for creating new event or updating event
@@ -77,9 +91,12 @@ export class EventForm extends Component {
               />
               <Field
                 name="date"
-                placeholder="Event Date"
                 type="text"
-                component={TextInput}
+                component={DateInput}
+                dateFormat='YYYY-MM-DD HH:mm'
+                timeFormat='HH:mm'
+                showTimeSelect
+                placeholder="Date and time of event"
               />
               <Button positive type="submit">
                 Submit
@@ -116,4 +133,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(reduxForm({ form: "eventForm", enableReinitialize: true })(EventForm));
+)(reduxForm({ form: "eventForm", enableReinitialize: true, validate })(EventForm));
