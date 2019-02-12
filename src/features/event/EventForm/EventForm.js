@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
+import moment from 'moment';
+
 import { Segment, Form, Button, Grid, Header } from "semantic-ui-react";
 import { composeValidators, combineValidators, isRequired, hasLengthGreaterThan } from 'revalidate'
 import { createEvent, updateEvent } from "../eventActions";
@@ -34,6 +36,7 @@ const validate = combineValidators({
 export class EventForm extends Component {
   //for creating new event or updating event
   onFormSubmit = values => {
+    values.date = moment(values.date).format()
     if (this.props.initialValues.id) {
       this.props.updateEvent(values);
       this.props.history.goBack();
